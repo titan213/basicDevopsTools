@@ -13,9 +13,6 @@ echo "*                                               *"
 echo "*                                               *"
 echo "*************************************************"
 
-alias tf="terraform"
-alias ans="ansible"
-alias k="kubectl"
 
 # Function to print versions in a formatted manner
 print_versions() {
@@ -25,9 +22,9 @@ print_versions() {
     printf "%-15s: %s\n" "Python" "$(python --version 2>&1)"
     printf "%-15s: %s\n" "Azure CLI" "$(az --version | grep azure-cli | awk '{print $2}')"
     printf "%-15s: %s\n" "AWS CLI" "$(aws --version 2>&1 | awk '{print $1}')"
-    printf "%-15s: %s\n" "Terraform" "$(tf version | head -n1)"
-    printf "%-15s: %s\n" "Ansible" "$(ans --version | head -n1 | awk '{print $2}')"
-    printf "%-15s: %s\n" "kubectl" "$(k version --client --short | awk '{print $3}')"
+    printf "%-15s: %s\n" "Terraform" "$(terraform version | head -n1)"
+    printf "%-15s: %s\n" "Ansible" "$(ansible --version | head -n1 | awk '{print $2}')"
+    printf "%-15s: %s\n" "kubectl" "$(kubectl version --client --short | awk '{print $3}')"
     echo "----------------------------"
 }
 
