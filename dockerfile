@@ -14,8 +14,8 @@ ARG KUBECTL_VERSION
 
 # Install basic utilities
 RUN apt-get update && \
-    ant-get upgrade && \
-    apt-get install -y --no-install-recommends git curl unzip software-properties-common lsb-release gnupg
+    apt-get upgrade && \
+    apt-get install -y --no-install-recommends git curl unzip software-properties-common lsb-release gnupg gcc
 
 #copy scripts to workdir
 COPY set-alias.sh entrypoint.sh /usr/src/app/
@@ -29,13 +29,16 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install
 
 # Install Terraform 
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
-    apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
-    apt-get update && apt-get install -y terraform=${TERRAFORM_VERSION}
+RUN curl -s https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip \
+    && unzip terraform.zip \
+    && chmod 0755 terraform \
+    && mv terraform /usr/local/bin
 
 # Install Ansible 
-RUN apt-get update && \
-    apt-get install -y ansible=${ANSIBLE_VERSION}
+RUN pip3 install --upgrade pip;\
+    pip3 install "ansible==${ANSIBLE_VERSION}"; \
+    pip3 install ansible
+
 
 # Install kubectl 
 RUN curl -LO "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
@@ -61,7 +64,7 @@ VOLUME /data
 # expose port 80 
 EXPOSE 80
 
-RUN chmod +x /usr/src/app/set-aliases.sh /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/set-alias.sh /usr/src/app/entrypoint.sh
 
 # Setup ENTRYPOINT
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

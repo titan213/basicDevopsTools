@@ -13,6 +13,10 @@ echo "*                                               *"
 echo "*                                               *"
 echo "*************************************************"
 
+alias tf="terraform"
+alias ans="ansible"
+alias k="kubectl"
+
 # Function to print versions in a formatted manner
 print_versions() {
     echo "Installed Software Versions:"
