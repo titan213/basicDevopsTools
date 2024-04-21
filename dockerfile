@@ -5,7 +5,7 @@ LABEL mainteiner="titan213"
 LABEL image="DevopsTools"
 
 # Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /data
 
 #Arguments for software versions
 ARG ANSIBLE_VERSION
@@ -13,9 +13,17 @@ ARG TERRAFORM_VERSION
 ARG KUBECTL_VERSION
 
 # Install basic utilities
-RUN apt-get update && \
-    apt-get upgrade && \
-    apt-get install -y --no-install-recommends git curl unzip software-properties-common lsb-release gnupg gcc
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+                git \
+                curl \
+                unzip \software-properties-common \
+                lsb-release \
+                tar \
+                nano \
+                openssh-client \
+                sshpass
 
 #copy scripts to workdir
 COPY scripts /usr/src/app/scripts
@@ -56,6 +64,12 @@ VOLUME /data
 EXPOSE 80
 
 RUN chmod +x /usr/src/app/scripts/set-alias.sh /usr/src/app/scripts/entrypoint.sh
+
+ENV ANSIBLE_GATHERING=smart \
+    ANSIBLE_HOST_KEY_CHECKING=false \
+    ANSIBLE_RETRY_FILES_ENABLED=false \
+    ANSIBLE_SSH_PIPELINING=True \
+    EDITOR=nano
 
 # Setup ENTRYPOINT
 ENTRYPOINT ["/usr/src/app/scripts/entrypoint.sh"]
